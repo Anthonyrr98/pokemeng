@@ -180,6 +180,62 @@
 
 若返回 503 或 database 错误，多半是 `DATABASE_URL` 未填、填错或数据库未放行 Vercel 访问。
 
+### 6.4 方案二：使用自定义域名（如 game.rlzhao.com）整站托管在 Vercel
+
+若希望用自有域名（例如 `game.rlzhao.com`）访问整站，且**登录/注册等 API 同域**（避免 405、跨域等问题），按下面步骤把域名指到 Vercel 即可。
+
+#### 步骤 1：确认项目已在 Vercel 部署
+
+- 在 [Vercel Dashboard](https://vercel.com/dashboard) 中已导入并部署本仓库（pokemeng / AicanGo 等）。
+- **Settings → Environment Variables** 里已配置好 `DATABASE_URL`、`VITE_BACKEND_URL`（可先填 `https://你的项目.vercel.app`，加完自定义域名后再改）。
+
+#### 步骤 2：在 Vercel 添加自定义域名
+
+1. 打开你的项目 → **Settings** → **Domains**。
+2. 在 **Domain** 输入框填写：`game.rlzhao.com`（或你的子域名），点击 **Add**。
+3. Vercel 会提示需要配置 DNS，并给出两种方式（见下一步）。
+
+#### 步骤 3：在域名服务商配置 DNS
+
+到你购买域名的服务商（如 Cloudflare、阿里云、腾讯云、GoDaddy 等）的 **DNS 解析** 里添加记录：
+
+- **推荐（CNAME）**  
+  - 类型：**CNAME**  
+  - 主机记录：`game`（若要用 `rlzhao.com` 则填 `@`；子域名 `game.rlzhao.com` 即填 `game`）  
+  - 记录值：**cname.vercel-dns.com**（以 Vercel 当前提示为准，可能是 `cname.vercel-dns.com` 或项目专属 CNAME）  
+  - 保存。
+
+- **或使用 A 记录**（若服务商不支持 CNAME 到根域）：  
+  - 按 Vercel Domains 页面给出的 **A 记录 IP** 填写（Vercel 文档中可查）。
+
+保存后等待几分钟到几十分钟生效。在 Vercel **Domains** 页面可看到该域名状态变为 **Valid**。
+
+#### 步骤 4：把前端请求改为走自定义域名
+
+1. 在 Vercel 项目 **Settings → Environment Variables** 中，把 **VITE_BACKEND_URL** 改为：  
+   `https://game.rlzhao.com`  
+   （不要末尾斜杠、不要加 `/api`；若你用其他域名则改成对应地址。）
+2. 若有 **ALLOWED_ORIGINS**，改为：`https://game.rlzhao.com`（与上面一致）。
+3. 到 **Deployments**，对最新部署点 **「⋯」→ Redeploy**，等构建完成。
+
+之后前端会请求 `https://game.rlzhao.com/api/auth/login` 等，由同一 Vercel 项目处理，不再出现 405。
+
+#### 步骤 5：（可选）避免与 GitHub Pages 冲突
+
+若之前用 GitHub Pages 部署过同一仓库，且也绑了 `game.rlzhao.com`：
+
+- 到 **GitHub 仓库 → Settings → Pages**，把 **Custom domain** 清空或改为其他域名；  
+  或  
+- 关闭该仓库的 **Pages** 部署，只保留 Vercel。
+
+这样访问 `game.rlzhao.com` 时只会走到 Vercel，不会走到静态托管。
+
+#### 验证
+
+- 浏览器打开：`https://game.rlzhao.com`，应能打开游戏页面。  
+- 再打开：`https://game.rlzhao.com/api/health`，应返回 `{"status":"ok","database":"connected"}` 之类。  
+- 在游戏内登录/注册，应不再出现 405。
+
 ---
 
 ## 七、环境变量速查表
