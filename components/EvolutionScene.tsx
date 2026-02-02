@@ -215,7 +215,7 @@ const EvolutionScene: React.FC<EvolutionSceneProps> = ({ baseMonster, onComplete
                         <div className="rounded-xl border border-white/10 bg-slate-800/95 p-3 flex flex-row flex-wrap items-center justify-center gap-3 max-w-2xl">
                             {/* 小图 + 名称 + HP */}
                             <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                                <TransparentImage src={evolvedMonster.imageUrl} alt={evolvedMonster.name} className="w-20 h-20 object-contain rounded-lg border border-white/10" />
+                                <TransparentImage src={evolvedMonster.imageUrl ?? ''} alt={evolvedMonster.name} className="w-20 h-20 object-contain rounded-lg border border-white/10" />
                                 <span className="text-white font-bold pixel-font text-sm">{evolvedMonster.name}</span>
                                 <span className="text-xs text-gray-400">Lv {evolvedMonster.level}</span>
                                 <div className="w-16 h-1.5 bg-gray-700 rounded-full overflow-hidden">
