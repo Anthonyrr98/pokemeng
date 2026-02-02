@@ -1,0 +1,25 @@
+# GitHub Actions 工作流（可选）
+# 如果需要 CI/CD，可以取消注释以下内容
+
+# name: Deploy
+# on:
+#   push:
+#     branches: [ main ]
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '18'
+#       - name: Install dependencies
+#         run: |
+#           npm install
+#           cd backend && npm install
+#       - name: Build
+#         run: npm run build
+#         env:
+#           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+#           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}

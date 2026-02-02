@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: aicango-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: PORT
+        value: 10000
+    healthCheckPath: /health
+
+databases:
+  - name: aicango-db
+    plan: free
+    databaseName: aicango
+    user: aicango

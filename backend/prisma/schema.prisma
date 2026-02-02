@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  password  String    // 密码哈希
+  isAdmin   Boolean   @default(false)  // 管理员账号
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  saves     GameSave[]
+  teams     Team[]
+  monsters  Monster[]  // 用户精灵仓库
+
+  @@map("User")
+}
+
+model GameSave {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  slot      Int      // 存档槽位 (1, 2, 3...)
+  data      Json     // 存档数据 (team, inventory, timestamp)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, slot])
+  @@map("GameSave")
+}
+
+model Team {
+  id        Int          @id @default(autoincrement())
+  userId    Int
+  name      String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monsters  TeamMonster[]
+
+  @@map("Team")
+}
+
+model TeamMonster {
+  id        Int      @id @default(autoincrement())
+  teamId    Int
+  monsterId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  monster   Monster  @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+
+  @@map("TeamMonster")
+}
+
+model Monster {
+  id          Int          @id @default(autoincrement())
+  userId      Int          // 所属用户，每个用户有自己的精灵仓库
+  name        String
+  element     String
+  description String?
+  imageUrl    String?
+  modelUrl    String?
+  visualPrompt String?
+  data        Json?        // 完整的精灵数据（stats, moves, level, exp, evolution等）
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamEntries TeamMonster[]
+
+  @@map("Monster")
+}
