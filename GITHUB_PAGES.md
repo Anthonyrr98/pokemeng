@@ -31,10 +31,7 @@
      例如: https://your-backend.up.railway.app
      ```
    
-   - **`VITE_GEMINI_API_KEY`**: 你的 Google Gemini API Key
-     ```
-     从 https://makersuite.google.com/app/apikey 获取
-     ```
+   （AI 生成用的 API Key 在游戏内「设置」里配置，无需在此填写。）
 
 ### 步骤 3: 推送代码触发部署
 
@@ -82,7 +79,6 @@ git push origin main
 GitHub Actions 工作流会使用以下环境变量：
 
 - `VITE_BACKEND_URL`: 后端 API 地址（必需）
-- `VITE_GEMINI_API_KEY`: Gemini API Key（必需）
 - `GITHUB_PAGES`: 自动设置为 `true`（用于构建配置）
 - `GITHUB_REPOSITORY`: 自动从 GitHub Actions 获取
 
@@ -160,7 +156,6 @@ GitHub Actions 工作流会使用以下环境变量：
 $env:GITHUB_PAGES="true"
 $env:GITHUB_REPOSITORY="username/AicanGo"
 $env:VITE_BACKEND_URL="https://your-backend.up.railway.app"
-$env:VITE_GEMINI_API_KEY="your-api-key"
 
 # 构建
 npm run build
@@ -177,7 +172,6 @@ npm run preview
 
 - [ ] GitHub Pages 已启用（Settings → Pages → Source: GitHub Actions）
 - [ ] `VITE_BACKEND_URL` Secret 已配置
-- [ ] `VITE_GEMINI_API_KEY` Secret 已配置
 - [ ] 后端已部署并正常运行
 - [ ] 后端 CORS 配置允许 GitHub Pages 域名
 - [ ] 代码已推送到 `main` 分支

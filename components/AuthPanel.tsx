@@ -23,7 +23,7 @@ const AuthPanel: React.FC<AuthPanelProps> = ({ onAuthSuccess }) => {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        const response = await fetch(`${BACKEND_BASE_URL}/health`, {
+        const response = await fetch(`${BACKEND_BASE_URL}/api/health`, {
           method: 'GET',
           signal: AbortSignal.timeout(3000), // 3秒超时
         });

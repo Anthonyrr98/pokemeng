@@ -4,7 +4,7 @@
 
 ## ✨ 功能特性
 
-- 🤖 **AI 生成怪物**：使用 Google Gemini API 生成独特的怪物设计
+- 🤖 **AI 生成怪物**：使用 AI API（如 SiliconFlow 等）在游戏内设置中配置，生成独特怪物
 - 🎨 **3D 可视化**：使用 Three.js 展示怪物模型
 - ⚔️ **回合制战斗**：策略性的战斗系统
 - 📈 **经验与进化**：怪物升级和进化系统
@@ -32,7 +32,7 @@
 ### 前置要求
 - Node.js 18+
 - MySQL 8.0+
-- Google Gemini API Key
+- （可选）AI 生成用的 API Key 在游戏内「设置」中配置
 
 ### 安装步骤
 
@@ -69,11 +69,11 @@ ADMIN_PASSWORD=你的密码
 PORT=4000
 ```
 
-创建 `.env.local` 文件（前端）：
+创建 `.env.local` 文件（前端，可选）：
 ```env
 VITE_BACKEND_URL=http://localhost:4000
-VITE_GEMINI_API_KEY=你的_Gemini_API_Key
 ```
+（AI 生成用的 API Key 在游戏内「设置」里配置。）
 
 5. **初始化数据库**
 ```bash
@@ -106,10 +106,12 @@ GitHub Pages 是免费的静态网站托管服务，非常适合前端部署。
 
 **快速步骤**:
 1. 在 GitHub 仓库 Settings → Pages → Source 选择 "GitHub Actions"
-2. 在 Settings → Secrets 添加 `VITE_BACKEND_URL` 和 `VITE_GEMINI_API_KEY`
+2. 在 Settings → Secrets 添加 `VITE_BACKEND_URL`
 3. 推送代码到 `main` 分支，GitHub Actions 会自动部署
 
 **详细指南**: 查看 [GITHUB_PAGES.md](./GITHUB_PAGES.md)
+
+- **Vercel 前后端同站**：查看 [VERCEL_CONFIG.md](./VERCEL_CONFIG.md) 了解环境变量、构建命令等详细配置
 
 #### 选项 2: Vercel
 
@@ -128,7 +130,6 @@ git push -u origin main
    - 导入你的 GitHub 仓库
    - 配置环境变量：
      - `VITE_BACKEND_URL`: 你的后端 API 地址
-     - `VITE_GEMINI_API_KEY`: 你的 Gemini API Key
    - 点击 "Deploy"
 
 ### 后端部署（Railway / Render）
@@ -195,9 +196,9 @@ AicanGo/
 
 ## 🔐 环境变量说明
 
-### 前端 (.env.local)
-- `VITE_BACKEND_URL`: 后端 API 地址
-- `VITE_GEMINI_API_KEY`: Google Gemini API Key
+### 前端 (.env.local，可选)
+- `VITE_BACKEND_URL`: 后端 API 地址（默认 `http://localhost:4000`）
+- AI 生成用的 API Key 在游戏内「设置」中配置
 
 ### 后端 (backend/.env)
 - `DATABASE_URL`: MySQL 数据库连接字符串

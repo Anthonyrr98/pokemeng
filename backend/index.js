@@ -91,8 +91,8 @@ async function ensureAdminUser() {
   }
 }
 
-// 健康检查
-app.get('/health', async (req, res) => {
+// 健康检查（/health 用于本地，/api/health 用于 Vercel 等部署）
+const healthHandler = async (req, res) => {
   if (!pool) {
     return res.status(503).json({ error: 'Database not configured' });
   }
@@ -102,7 +102,9 @@ app.get('/health', async (req, res) => {
   } catch (error) {
     res.status(503).json({ error: 'Database connection failed', message: error.message });
   }
-});
+};
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 // 注册接口
 app.post('/api/auth/register', async (req, res) => {
@@ -507,27 +509,28 @@ app.get('/api/monsters/:username', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Backend server running on http://localhost:${PORT}`);
-  if (!pool) {
-    console.warn('⚠️  Database not configured. Set DATABASE_URL in .env');
-  } else {
-    console.log('✅ Database connection pool created');
-    // 测试数据库连接
-    pool.query('SELECT 1').then(() => {
-      console.log('✅ Database connection test successful');
-    }).catch((err) => {
-      console.error('❌ Database connection test failed:', err.message);
-    });
-    ensureAdminUser().catch(() => {});
-  }
-});
+// 仅在本机直接运行或非 Vercel 时启动 HTTP 服务；在 Vercel 上由 Serverless 调用
+if (typeof process.env.VERCEL === 'undefined' && require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Backend server running on http://localhost:${PORT}`);
+    if (!pool) {
+      console.warn('⚠️  Database not configured. Set DATABASE_URL in .env');
+    } else {
+      console.log('✅ Database connection pool created');
+      pool.query('SELECT 1').then(() => {
+        console.log('✅ Database connection test successful');
+      }).catch((err) => {
+        console.error('❌ Database connection test failed:', err.message);
+      });
+      ensureAdminUser().catch(() => {});
+    }
+  });
+  process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+  });
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  });
+}
 
-// 处理未捕获的异常，防止服务器崩溃
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
+module.exports = app;
